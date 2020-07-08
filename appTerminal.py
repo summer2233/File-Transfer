@@ -48,7 +48,7 @@ else:
             mode = int(mode)
         else: mode = None
 
-# 要求用户输入IP和端口号，检查端口是否有效
+# 要求用户输入IP和端口号，并检查端口是否有效
 
 ip = input("\n\n Enter the IP: ")
 

@@ -1,6 +1,10 @@
 
 
+### 使用说明
 
+```shell
+py appTerminal.py
+```
 
 ### 需求
 
