@@ -32,7 +32,7 @@ def login():
     file_read()
     global host
     # Create socket and bind
-    port = input('Enter Port : ')
+    port = 9998#input('Enter Port : ')
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         server_socket.bind ((host, int(port)))

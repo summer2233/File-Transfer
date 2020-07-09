@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from fileTransfer import FileTransfer
-# from login import login
+
 import os
 
 try:
@@ -95,7 +95,7 @@ def showProgress(percent,size=25):
 filename = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\Touch-Of-Love.mp3'
 filename_size = 20
 ip = '127.0.0.1'
-mode = 2
+mode = 1
 path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\upload'
 port = 9999 
 
