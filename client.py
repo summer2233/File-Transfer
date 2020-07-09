@@ -5,7 +5,7 @@ import os
 
 from login_client import login
 
-if login():
+if login:#login():
     try:
         import keyboard
     except ModuleNotFoundError:
@@ -95,11 +95,11 @@ if login():
 
     # 启动服务端或客户端
 
-    filename = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\Touch-Of-Love.mp3'
+    filename = 'None'
     filename_size = 20
     ip = '127.0.0.1'
     mode = 2
-    path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\Touch-Of-Love.mp3'
+    path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\upload'
     port = 9999
 
     if mode == 1:
@@ -186,7 +186,7 @@ if login():
             # 初始化传输
             try:
                 freespace = getFreeSpaceMb('C:\\')
-                print('磁盘剩余空间: ', str(freespace), 'MB, 可以传输')
+                print('磁盘剩余空间: ', str(freespace), 'GB, 可以传输')
                 fileTransfer.transfer(showProgress)
                 print("")
                 input("\n Transfer completed successfully.\n\n")
