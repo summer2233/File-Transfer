@@ -1,9 +1,25 @@
 
+### 环境需求
+
+* Python 3.5+
+
 
 ### 使用说明
 
+#### 服务端
+
 ```shell
-py appTerminal.py
+py login_server.py
+```
+
+```shell
+py server.py
+```
+
+#### 客户端
+
+```shell
+py client.py
 ```
 
 ### 需求（每个 20 分）
@@ -17,29 +33,4 @@ py appTerminal.py
 4．客户端和服务器必须具有上传和下载两种能力，并且为了确保上传和下载能够成功，要求先检查碰盘空间。
 
 5. 完成实验报告
-
-### 模块
-
-* 用户身份验证
-
-* 服务端接收文件
-
-* 服务端发送文件
-
-* 客户端接收文件
-
-* 客户端发送文件
-
-* 获取文件列表
-
-* 获取文件元数据
-
-
-
----
-
-### About the program:
-
-Upload or download images, music, videos and other file types using this program with a graphical user interface or terminal. <br />
-To get started, you will need to enter the IP and Port Number to connect to a server or create a server and choose whether to upload or download a file. After that select the file you want to upload (only one file at a time) or folder to save the downloaded file.
 
