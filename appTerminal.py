@@ -109,7 +109,7 @@ if mode == 1:
     print(" Awaiting confirmation of {} ...".format(info[0]))
     filename = os.path.split(path)[-1]
 
-    # 检查文件名大小是否大于限制大小。 如果是这样，它将减少
+    # 检查文件名大小是否大于限制大小, 如果超出限制截掉末尾
     if len(filename.split(".")[0]) > filename_size:
         filename = filename.split(".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
@@ -128,13 +128,13 @@ if mode == 1:
 
 else:
 
-    # 格式化所用文件的大小
+    # 获取所用文件的大小
     size = int(float(info[1]))
     size = FileTransfer.getFormattedSize(size)
 
     filename = info[0]
 
-    # 检查文件名大小是否大于限制大小。 如果是这样，它将减少
+    # 检查文件名大小是否大于限制大小, 如果超出限制截掉末尾
     if len(filename.split(".")[0]) > filename_size:
         filename = filename.split(".")[0][0:filename_size]+"."+filename.split(".")[-1]
 

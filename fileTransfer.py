@@ -20,13 +20,13 @@ class NoConnectionException(Exception):
 
 
 class FileTransfer(object):
-    __CLIENT = 0
-    __HOST = 1
+    __RECEIVE = 0
+    __SEND = 1
     __OK = "OK+"
     __END = "{;[???END???];}"
 
-    CLIENT = __CLIENT
-    HOST = __HOST
+    RECEIVE = __RECEIVE
+    SEND = __SEND
     OK = __OK
     END = __END
 
@@ -38,7 +38,7 @@ class FileTransfer(object):
     __stop = False
     __running = False
 
-    def __init__(self, filename=None, path=None, mode=CLIENT):
+    def __init__(self, filename=None, path=None, mode=RECEIVE):
         """
         在调用“ connect”和“ transfer”方法之前，必须使用参数“ filename”和“ path”。
         如果传输类型为UPLOAD，则必须在参数“ filename”中传递文件路径。
@@ -71,12 +71,12 @@ class FileTransfer(object):
         if self.__connected:
             raise ActiveConnectionException
 
-        if mode in [self.__CLIENT, self.__HOST]:
+        if mode in [self.__RECEIVE, self.__SEND]:
             self.__mode = mode
             self.MODE = self.__mode
         else:
             raise ValueError(
-                "The mode parameter must be FileTransfer.CLIENT or FileTransfer.HOST")
+                "The mode parameter must be FileTransfer.RECEIVE or FileTransfer.SEND")
 
     def changePath(self, path):
         """
@@ -116,7 +116,7 @@ class FileTransfer(object):
 
         self.__socket = socket.socket(family, type_)
 
-        if self.__mode == self.CLIENT:
+        if self.__mode == self.RECEIVE:
 
             # 检查是否存在用于保存要下载文件的目录
             if not self.__path:
@@ -135,7 +135,7 @@ class FileTransfer(object):
             # 返回包含文件名称和大小的字符串
             return transferInfo
 
-        elif self.__mode == self.HOST:
+        elif self.__mode == self.SEND:
 
             # 检查是否定义了要发送的文件
             if not self.__filename:
@@ -190,7 +190,7 @@ class FileTransfer(object):
         self.__running = True
         self.__stop = False
 
-        if self.__mode == self.CLIENT:
+        if self.__mode == self.RECEIVE:
 
             # 此变量将存储接收到的字节数
             received = 0
@@ -235,7 +235,7 @@ class FileTransfer(object):
             else:
                 raise IncompleteTransferError
 
-        elif self.__mode == self.HOST:
+        elif self.__mode == self.SEND:
 
             # 此变量将存储发送的字节数
             sent = 0
