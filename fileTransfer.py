@@ -105,10 +105,10 @@ class FileTransfer(object):
         连接方法。
         “address”参数必须为
         包含IP和端口号的字符串。
-        如果连接类型为CLIENT，则名称为
+        如果连接类型为RECEIVE，则名称为
         文件及其大小（以字节为单位）。
         示例：[“ hello world.txt”，“ 987”]。
-        如果连接类型为HOST，则将返回客户端地址。
+        如果连接类型为SEND，则将返回客户端地址。
         """
 
         if self.__connected:
@@ -143,7 +143,7 @@ class FileTransfer(object):
 
             # 创建服务器
             self.__socket.bind(address)
-            self.__socket.listen(1)
+            self.__socket.listen(5)
 
             # 获取客户端连接和数据
             newSocket, clientInfo = self.__socket.accept()

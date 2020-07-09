@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
-from fileTransfer import FileTransfer
-
 import os
+import socket 
+import sys
 
 try:
     import keyboard
@@ -26,6 +26,29 @@ def showProgress(percent, size=25):
             filename, percent, "#"*int((percent*size)), " "*int(((100*size)-percent*size))), end="")
 
 while True:
+    
+    filename = None
+    filename_size = 20
+    ip = '127.0.0.1'
+    hostname = 'summerdesktop'
+    port = 9997
+
+    # 与客户端建立连接以传输 mode 和 path
+    host = socket.gethostname() 
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        server_socket.bind ((host, int(port)))
+    except:
+        print("Bind Failed! Error : " + str(sys.exc_info()))
+        sys.exit()
+
+
+    server_socket.listen(5)
+    print("Hostname : " + host)
+    print('Socket is now listening...')
+    print('*'*40)
+
+
     # filename = None
     # filename_size = 20
     # ip = None
@@ -95,14 +118,34 @@ while True:
     # 启动服务端或客户端
 
 
-    filename = None
-    filename_size = 20
-    ip = '127.0.0.1'
-    mode = 1
-    path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\Touch-Of-Love.mp3'
-    port = 9999
 
-    if mode == 1:
+    # mode = 1
+    # path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\Touch-Of-Love.mp3'
+
+
+# Connect to a client
+    client_socket, address = server_socket.accept()
+    ip, port = str(address[0]), str(address[1])
+    print("Connected with " + ip + ":" + port)
+
+    # Get username and password
+    mode = client_socket.recv(1024).decode()
+    mode = int(mode)
+    client_socket.send(('ACK : Mode received!').encode())
+    print("Mode received from "+ip+":"+port)
+    path = client_socket.recv(1024).decode()
+    client_socket.send(('ACK : Path received!').encode())
+    print("Path received from "+ip+":"+port)
+
+    # Close client socket
+    client_socket.close()
+    print("Connection " + ip + ":" + port + " closed!")
+    print('*'*40)
+
+    ip = '127.0.0.1'
+    port = 9999
+    from fileTransfer import FileTransfer
+    if mode == 2:
         fileTransfer = FileTransfer(filename=path, mode=FileTransfer.SEND)
         print(" 等待连接 ...")
     else:
@@ -118,7 +161,7 @@ while True:
     # 如果用户正在发送文件，则将通知他需要等待客户的确认。
     # 确认后，将发送文件。
 
-    if mode == 1:
+    if mode == 2:
         print(" 等待 host 确定： {} ...".format(info[0]))
         filename = os.path.split(path)[-1]
 

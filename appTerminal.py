@@ -94,11 +94,11 @@ print("\n")
 # 启动服务端或客户端
 
 if mode == 1:
-    fileTransfer = FileTransfer(filename=path, mode=FileTransfer.HOST)
+    fileTransfer = FileTransfer(filename=path, mode=FileTransfer.SEND)
     print(" Awaiting connection ...")
 else:
     print(" Connecting ...")
-    fileTransfer = FileTransfer(path=path, mode=FileTransfer.CLIENT)
+    fileTransfer = FileTransfer(path=path, mode=FileTransfer.RECEIVE)
 try:
     info = fileTransfer.connect((ip, port))
 except:

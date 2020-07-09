@@ -2,10 +2,12 @@
 from fileTransfer import FileTransfer
 from getFreeSpace import getFreeSpaceMb
 import os
+import socket 
+import sys
 
 from login_client import login
 
-if login:#login():
+if login():
     try:
         import keyboard
     except ModuleNotFoundError:
@@ -93,33 +95,74 @@ if login:#login():
 
     # print("\n")
 
-    # 启动服务端或客户端
+    
 
     filename = 'None'
     filename_size = 20
     ip = '127.0.0.1'
+    hostname = 'summerdesktop'#input('Enter hostname: ')
     mode = 2
     path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\upload'
-    port = 9999
+    port = 9997
+    
 
+    # 与服务端建立连接，传输 mode 和 path
+    welcome_msg = ('-'*20) + 'WELCOME!' + ('-'*20)
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        client_socket.connect((hostname, int(port)))
+        print('Connection Successful!\n')
+        print(welcome_msg)
+    except:
+        print("Connection Error!")
+        sys.exit()
+    
+
+    mode = input('请选择 \n 1)上传\n 2)下载: ')
+    client_socket.send(mode.encode())
+    mode = int(mode)
+    # print(client_socket.recv(1024).decode())
     if mode == 1:
-        fileTransfer = FileTransfer(filename=path, mode=FileTransfer.SEND)
+        localPath = input(' 请输入本地文件的路径及文件名: ')
+        path = input(' 请输入要上传到的远程路径 (默认为 upload): ')
+        if not path: 
+            path = getcwd + '\\upload'
+        if not os.path.isabs(path):
+            path = os.path.abspath(path)
+    elif mode == 2:
+        path = input(' 请输入远程文件的路径及文件名: ')
+        localPath = input(' 请输入要下载到的本地路径 (默认为 download): ')
+        if not localPath:
+            localPath = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\download'
+        if not os.path.isabs(path):
+            path = os.path.abspath(path)
+    client_socket.send(path.encode())
+    # print(client_socket.recv(1024).decode())
+
+
+    ip = '127.0.0.1'
+    port = 9999
+    # 启动文件传输服务
+
+    if mode == 1: # 上传到服务端
+        fileTransfer = FileTransfer(filename=localPath, mode=FileTransfer.SEND)
         print(" 等待连接 ...")
-    else:
+    else: # 下载到本地
         print(" 连接中 ...")
-        fileTransfer = FileTransfer(path=path, mode=FileTransfer.RECEIVE)
+        fileTransfer = FileTransfer(path=localPath, mode=FileTransfer.RECEIVE)
     try:
         info = fileTransfer.connect((ip, port))
     except:
-        input(" 尝试连接失败")
-        quit()
+        # input(" 尝试连接失败")
+        # quit()
+        pass
 
     # 如果用户正在发送文件，则将通知他需要等待客户的确认。
     # 确认后，将发送文件。
 
     if mode == 1:
         print(" 等待 host 确定： {} ...".format(info[0]))
-        filename = os.path.split(path)[-1]
+        filename = os.localPath.split(localPath)[-1]
 
         # 检查文件名大小是否大于限制大小。 如果是这样，它将减少
         if len(filename.split(".")[0]) > filename_size:
@@ -128,7 +171,7 @@ if login:#login():
 
         try:
             freespace = getFreeSpaceMb('C:\\')
-            print('磁盘剩余空间: ', str(freespace), 'MB, 可以传输')
+            print('\n磁盘剩余空间: ', str(freespace), 'MB, 可以传输\n')
             fileTransfer.transfer(showProgress)
             print("")
             input("\n 文件传输成功。\n\n")
@@ -154,7 +197,7 @@ if login:#login():
                 ".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
         print(
-            '\n Do you want to download "%s" [%.2f %s] ? (Y/N)' % (filename, size[0], size[1]))
+            '\n 您想要下载 "%s" [%.2f %s] 吗? (Y/N)' % (filename, size[0], size[1]))
 
         # 等待用户响应
         confirmation = None
@@ -186,12 +229,12 @@ if login:#login():
             # 初始化传输
             try:
                 freespace = getFreeSpaceMb('C:\\')
-                print('磁盘剩余空间: ', str(freespace), 'GB, 可以传输')
+                print('磁盘剩余容量: ', str(freespace)[:5], 'GB, 空间充足, 开始传输。')
                 fileTransfer.transfer(showProgress)
                 print("")
-                input("\n Transfer completed successfully.\n\n")
+                input("\n 传输结束，请按任意键退出。\n\n")
             except:
                 print("")
-                input("\n A failure occurred during the transfer.\n\n")
+                input("\n 传输过程出错。。。\n\n")
             finally:
                 fileTransfer.close()
