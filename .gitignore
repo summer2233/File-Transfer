@@ -1,4 +1,6 @@
 __pycache__/
 upload/
-Socket-Programming
-Socket-Programming
+Socket-Programming/
+download/
+\.vscode/
+app*

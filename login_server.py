@@ -42,23 +42,23 @@ def login():
     
     
     server_socket.listen(5)
-    print("Hostname : " + host)
-    print('Socket is now listening...')
+    print("主机名 : " + host)
+    print('监听端口中 ...')
     print('*'*40)
 
     while True:
         # Connect to a client
         client_socket, address = server_socket.accept()
         ip, port = str(address[0]), str(address[1])
-        print("Connected with " + ip + ":" + port)
+        print(" 已连接到 " + ip + ":" + port)
 
         # Get username and password
         username = client_socket.recv(1024).decode()
-        client_socket.send(('ACK : Username received!').encode())
-        print("Username received from "+ip+":"+port)
+        client_socket.send(('ACK : 接收到用户名！').encode())
+        print(" 已从 "+ip+":"+port+" 接收到用户名")
         password = client_socket.recv(1024).decode()
-        client_socket.send(('ACK : Password received!').encode())
-        print("Password received from "+ip+":"+port)
+        client_socket.send(('ACK : 接收到密码！').encode())
+        print(" 已从 "+ip+":"+port+" 接收到密码")
 
         # Validate authentication
         if validate_login(username, password) == '1':
@@ -68,7 +68,7 @@ def login():
 
         # Close client socket
         client_socket.close()
-        print("Connection " + ip + ":" + port + " closed!")
+        print(ip + ":" + port + " 连接关闭！")
         print('*'*40)
 
 # Run the main function

@@ -8,11 +8,6 @@ import sys
 from login_client import login
 
 if login():
-    try:
-        import keyboard
-    except ModuleNotFoundError:
-        keyboard = None
-
     def showProgress(percent, size=25):
         """
         显示传输进度
@@ -28,73 +23,6 @@ if login():
         else:
             print('\r 正在下载 "{}" ... {}% [{}{}] '.format(
                 filename, percent, "#"*int((percent*size)), " "*int(((100*size)-percent*size))), end="")
-
-    # filename = None
-    # filename_size = 20
-    # ip = None
-    # mode = None
-    # path = None
-    # port = None
-
-    # # 要求用户输入 IP
-
-    # ip = input("\n\n 请输入 host IP: ")
-
-    # while not port:
-    #     try:
-    #         port = int(input("\n 请输入端口号: "))
-    #     except:
-    #         input(" 端口号无效.")
-
-    # # 询问用户上传还是下载
-
-    # print("\n 请选择: \n 1: 上传\n 2: 下载")
-
-    # if keyboard:
-    #     while not mode:
-    #         if keyboard.is_pressed("1"):
-    #             mode = 1
-    #             # port = 9998
-    #         elif keyboard.is_pressed("2"):
-    #             mode = 2
-    #             # port = 9995
-    #     keyboard.press("backspace")
-    # else:
-    #     while not mode:
-    #         mode = input("\n")
-    #         if mode in ("1","2"):
-    #             mode = int(mode)
-    #         else: mode = None
-
-    # # 要求用户输入文件夹或文件路径
-    # while not path:
-
-    #     # 如果用户要发送文件，将要求他们提供文件名。
-    #     # 之后，将检查该文件是否存在。
-
-    #     if mode == 1:
-    #         input_ = input("\n 请输入要上传的文件路径和文件名: ")
-
-    #         if os.path.exists(input_):
-    #             path = input_
-    #         else:
-    #             input(" 找不到此文件。")
-
-    #     # 如果用户要下载文件，将要求他们提供文件夹的路径，以便保存下载的文件。
-
-    #     else:
-    #         input_ = input("\n 请输入保存此文件的文件夹: ")
-
-    #         if not input_:
-    #             path = os.getcwd()
-    #         else:
-    #             if os.path.isdir(input_):
-    #                 path = input_
-    #             else:
-    #                 input(" 找不到此文件夹。")
-
-    # print("\n")
-
     
 
     filename = 'None'
@@ -111,29 +39,31 @@ if login():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         client_socket.connect((hostname, int(port)))
-        print('Connection Successful!\n')
+        print('连接成功！\n')
         print(welcome_msg)
     except:
-        print("Connection Error!")
+        print("连接错误！")
         sys.exit()
-    
+    while mode not in ['1', '2']:
+        mode = input('请选择 \n 1)上传\n 2)下载\n 3)列出远程的文件 : ')
+        if mode == '3':
+            print
 
-    mode = input('请选择 \n 1)上传\n 2)下载: ')
     client_socket.send(mode.encode())
     mode = int(mode)
-    # print(client_socket.recv(1024).decode())
+    dirlist = client_socket.recv(1024).decode()
     if mode == 1:
         localPath = input(' 请输入本地文件的路径及文件名: ')
         path = input(' 请输入要上传到的远程路径 (默认为 upload): ')
         if not path: 
-            path = getcwd + '\\upload'
+            path = os.getcwd() + '\\upload'
         if not os.path.isabs(path):
             path = os.path.abspath(path)
     elif mode == 2:
         path = input(' 请输入远程文件的路径及文件名: ')
         localPath = input(' 请输入要下载到的本地路径 (默认为 download): ')
         if not localPath:
-            localPath = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\download'
+            localPath = os.getcwd() + '\\download'
         if not os.path.isabs(path):
             path = os.path.abspath(path)
     client_socket.send(path.encode())
@@ -197,29 +127,21 @@ if login():
                 ".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
         print(
-            '\n 您想要下载 "%s" [%.2f %s] 吗? (Y/N)' % (filename, size[0], size[1]))
+            '\n 您确定要下载 "%s" [%.2f %s] 吗? (Y/N)' % (filename, size[0], size[1]))
 
         # 等待用户响应
         confirmation = None
 
-        if keyboard:
-            while not confirmation:
-                if keyboard.is_pressed("y") or keyboard.is_pressed("Y"):
-                    confirmation = 1
-                if keyboard.is_pressed("n") or keyboard.is_pressed("N"):
-                    confirmation = 2
-            keyboard.press("backspace")
 
-        else:
-            while not confirmation:
-                confirmation = input("\n Your decision: ").lower()
+        while not confirmation:
+            confirmation = input("\n 您的选择: ").lower()
 
-                if confirmation == "y":
-                    confirmation = 1
-                elif confirmation == "n":
-                    confirmation = 2
-                else:
-                    confirmation = None
+            if confirmation == "y":
+                confirmation = 1
+            elif confirmation == "n":
+                confirmation = 2
+            else:
+                confirmation = None
 
         # 如果用户不接受该文件，则关闭连接和程序
         if confirmation == 2:

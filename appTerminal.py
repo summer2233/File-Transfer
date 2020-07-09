@@ -2,10 +2,6 @@
 from fileTransfer import FileTransfer
 import os
 
-try:
-    import keyboard
-except ModuleNotFoundError:
-    keyboard = None
 
 
 def showProgress(percent, size=25):
@@ -37,20 +33,12 @@ port = None
 
 print("\n What do you want to do ?\n 1: Upload\n 2: Download")
 
-if keyboard:
-    while not mode:
-        if keyboard.is_pressed("1"):
-            mode = 1
-        elif keyboard.is_pressed("2"):
-            mode = 2
-    keyboard.press("backspace")
-else:
-    while not mode:
-        mode = input("\n Option: ")
-        if mode in ("1", "2"):
-            mode = int(mode)
-        else:
-            mode = None
+while not mode:
+    mode = input("\n Option: ")
+    if mode in ("1", "2"):
+        mode = int(mode)
+    else:
+        mode = None
 
 # 要求用户输入IP和端口号，并检查端口是否有效
 
@@ -150,24 +138,16 @@ else:
     # 等待用户响应
     confirmation = None
 
-    if keyboard:
-        while not confirmation:
-            if keyboard.is_pressed("y") or keyboard.is_pressed("Y"):
-                confirmation = 1
-            if keyboard.is_pressed("n") or keyboard.is_pressed("N"):
-                confirmation = 2
-        keyboard.press("backspace")
 
-    else:
-        while not confirmation:
-            confirmation = input("\n Your decision: ").lower()
+    while not confirmation:
+        confirmation = input("\n Your decision: ").lower()
 
-            if confirmation == "y":
-                confirmation = 1
-            elif confirmation == "n":
-                confirmation = 2
-            else:
-                confirmation = None
+        if confirmation == "y":
+            confirmation = 1
+        elif confirmation == "n":
+            confirmation = 2
+        else:
+            confirmation = None
 
     # 如果用户不接受该文件，则关闭连接和程序
     if confirmation == 2:
