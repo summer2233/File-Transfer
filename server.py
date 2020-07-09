@@ -49,13 +49,14 @@ while True:
     ip, port = str(address[0]), str(address[1])
     print(" 已连接到 " + ip + ":" + port)
 
-    # Get username and password
+    # Get mode and path
     mode = client_socket.recv(1024).decode()
+    while mode == '3':
+        client_socket.send((str(os.listdir('upload'))).encode())
+        mode = client_socket.recv(1024).decode()
+        
     mode = int(mode)
-    if mode == 3: # listdir
-        client_socket.send((os.listdir('upload')).encode())
-    else:
-        client_socket.send(('ACK : 接收到模式！').encode())
+    client_socket.send(('ACK : 接收到模式！').encode())
     print(" 已从 "+ip+":"+port+" 接收到模式")
     path = client_socket.recv(1024).decode()
     client_socket.send(('ACK : 接收到路径！').encode())
@@ -65,7 +66,7 @@ while True:
     client_socket.close()
     print(ip + ":" + port + " 连接关闭！")
     print('*'*40)
-
+    from fileTransfer import FileTransfer
     ip = '127.0.0.1'
     port = 9999
     from fileTransfer import FileTransfer
@@ -120,34 +121,13 @@ while True:
             filename = filename.split(
                 ".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
-        print(
-            '\n 您确定要下载 "%s" [%.2f %s] 吗? (Y/N)' % (filename, size[0], size[1]))
-
-        # 等待用户响应
-        confirmation = None
-
-        while not confirmation:
-            confirmation = input("\n 您的选择: ").lower()
-
-            if confirmation == "y":
-                confirmation = 1
-            elif confirmation == "n":
-                confirmation = 2
-            else:
-                confirmation = None
-
-        # 如果用户不接受该文件，则关闭连接和程序
-        if confirmation == 2:
+        # 初始化传输
+        try:
+            fileTransfer.transfer(showProgress)
+            print("")
+            print("\n 传输结束。\n\n")
+        except:
+            print("")
+            input("\n 传输过程出错。。。\n\n")
+        finally:
             fileTransfer.close()
-
-        else:
-            # 初始化传输
-            try:
-                fileTransfer.transfer(showProgress)
-                print("")
-                print("\n 传输结束。\n\n")
-            except:
-                print("")
-                input("\n 传输过程出错。。。\n\n")
-            finally:
-                fileTransfer.close()

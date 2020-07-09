@@ -19,10 +19,10 @@ def login():
 
     username = input(' 请输入用户名: ')
     client_socket.send(username.encode())
-    print(client_socket.recv(1024).decode())
+    # print(client_socket.recv(1024).decode())
     password = input(' 请输入密码 : ')
     client_socket.send(password.encode())
-    print(client_socket.recv(1024).decode())
+    # print(client_socket.recv(1024).decode())
 
     validate_bit = client_socket.recv(1024).decode()
     if validate_bit == '0':

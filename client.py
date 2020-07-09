@@ -30,7 +30,6 @@ if login():
     ip = '127.0.0.1'
     hostname = 'summerdesktop'#input('Enter hostname: ')
     mode = 2
-    path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\upload'
     port = 9997
     
 
@@ -44,28 +43,37 @@ if login():
     except:
         print("连接错误！")
         sys.exit()
-    while mode not in ['1', '2']:
+
+
+    while not mode in ['1', '2']:    
         mode = input('请选择 \n 1)上传\n 2)下载\n 3)列出远程的文件 : ')
         if mode == '3':
-            print
-
+            client_socket.send(mode.encode())
+            dirlist = client_socket.recv(1024).decode()
+            print('远程文件列表如下：')
+            print(dirlist)
     client_socket.send(mode.encode())
     mode = int(mode)
-    dirlist = client_socket.recv(1024).decode()
+    # dirlist = client_socket.recv(1024).decode()
+        
     if mode == 1:
         localPath = input(' 请输入本地文件的路径及文件名: ')
         path = input(' 请输入要上传到的远程路径 (默认为 upload): ')
         if not path: 
             path = os.getcwd() + '\\upload'
-        if not os.path.isabs(path):
-            path = os.path.abspath(path)
     elif mode == 2:
         path = input(' 请输入远程文件的路径及文件名: ')
         localPath = input(' 请输入要下载到的本地路径 (默认为 download): ')
         if not localPath:
             localPath = os.getcwd() + '\\download'
-        if not os.path.isabs(path):
-            path = os.path.abspath(path)
+    
+    # 将相对路径转换为绝对路径
+    if not os.path.isabs(path):
+        path = os.path.abspath(path)
+    if not os.path.isabs(localPath):
+        path = os.path.abspath(localPath)
+
+
     client_socket.send(path.encode())
     # print(client_socket.recv(1024).decode())
 
@@ -83,8 +91,8 @@ if login():
     try:
         info = fileTransfer.connect((ip, port))
     except:
-        # input(" 尝试连接失败")
-        # quit()
+        input(" 尝试连接失败")
+        quit()
         pass
 
     # 如果用户正在发送文件，则将通知他需要等待客户的确认。
@@ -92,7 +100,7 @@ if login():
 
     if mode == 1:
         print(" 等待 host 确定： {} ...".format(info[0]))
-        filename = os.localPath.split(localPath)[-1]
+        filename = os.path.split(localPath)[-1]
 
         # 检查文件名大小是否大于限制大小。 如果是这样，它将减少
         if len(filename.split(".")[0]) > filename_size:
