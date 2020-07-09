@@ -1,10 +1,11 @@
 # This is the client code
-import socket 
+import socket
 import sys
 
+
 def login():
-    ip = 'summerdesktop'# input('Enter hostname of server : ')
-    port = 9998#input('Enter Port : ')
+    ip = 'summerdesktop'  # input('Enter hostname of server : ')
+    port = 9998  # input('Enter Port : ')
     welcome_msg = ('-'*20) + 'WELCOME!' + ('-'*20)
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -15,7 +16,6 @@ def login():
     except:
         print("Connection Error!")
         sys.exit()
-        
 
     username = input('Enter Username : ')
     client_socket.send(username.encode())
@@ -32,5 +32,3 @@ def login():
     else:
         print('Authentication Successful!')
         return True
-
-    

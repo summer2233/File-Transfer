@@ -7,19 +7,22 @@ try:
 except ModuleNotFoundError:
     keyboard = None
 
-def showProgress(percent,size=25):
+
+def showProgress(percent, size=25):
     """
     显示传输进度
     """
 
-    global filename,mode
+    global filename, mode
     size /= 100
     percent = int(percent)
 
     if mode == 1:
-        print('\r Sending "{}" ... {}% [{}{}] '.format(filename,percent,"#"*int((percent*size))," "*int(((100*size)-percent*size))),end="")
+        print('\r Sending "{}" ... {}% [{}{}] '.format(
+            filename, percent, "#"*int((percent*size)), " "*int(((100*size)-percent*size))), end="")
     else:
-        print('\r Downloading "{}" ... {}% [{}{}] '.format(filename,percent,"#"*int((percent*size))," "*int(((100*size)-percent*size))),end="")
+        print('\r Downloading "{}" ... {}% [{}{}] '.format(
+            filename, percent, "#"*int((percent*size)), " "*int(((100*size)-percent*size))), end="")
 
 
 filename = None
@@ -27,7 +30,7 @@ filename_size = 20
 ip = None
 mode = None
 path = None
-port = None 
+port = None
 
 
 # 询问用户上传还是下载
@@ -44,9 +47,10 @@ if keyboard:
 else:
     while not mode:
         mode = input("\n Option: ")
-        if mode in ("1","2"):
+        if mode in ("1", "2"):
             mode = int(mode)
-        else: mode = None
+        else:
+            mode = None
 
 # 要求用户输入IP和端口号，并检查端口是否有效
 
@@ -90,13 +94,13 @@ print("\n")
 # 启动服务端或客户端
 
 if mode == 1:
-    fileTransfer = FileTransfer(filename=path,mode=FileTransfer.HOST)
+    fileTransfer = FileTransfer(filename=path, mode=FileTransfer.HOST)
     print(" Awaiting connection ...")
 else:
     print(" Connecting ...")
-    fileTransfer = FileTransfer(path=path,mode=FileTransfer.CLIENT)
+    fileTransfer = FileTransfer(path=path, mode=FileTransfer.CLIENT)
 try:
-    info = fileTransfer.connect((ip,port))
+    info = fileTransfer.connect((ip, port))
 except:
     input(" Failed to attempt to connect.")
     quit()
@@ -111,7 +115,8 @@ if mode == 1:
 
     # 检查文件名大小是否大于限制大小, 如果超出限制截掉末尾
     if len(filename.split(".")[0]) > filename_size:
-        filename = filename.split(".")[0][0:filename_size]+"."+filename.split(".")[-1]
+        filename = filename.split(
+            ".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
     try:
         fileTransfer.transfer(showProgress)
@@ -136,9 +141,11 @@ else:
 
     # 检查文件名大小是否大于限制大小, 如果超出限制截掉末尾
     if len(filename.split(".")[0]) > filename_size:
-        filename = filename.split(".")[0][0:filename_size]+"."+filename.split(".")[-1]
+        filename = filename.split(
+            ".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
-    print('\n Do you want to download "%s" [%.2f %s] ? (Y/N)'%(filename,size[0],size[1]))
+    print(
+        '\n Do you want to download "%s" [%.2f %s] ? (Y/N)' % (filename, size[0], size[1]))
 
     # 等待用户响应
     confirmation = None
@@ -161,7 +168,6 @@ else:
                 confirmation = 2
             else:
                 confirmation = None
-            
 
     # 如果用户不接受该文件，则关闭连接和程序
     if confirmation == 2:
@@ -178,6 +184,3 @@ else:
             input("\n A failure occurred during the transfer.\n\n")
         finally:
             fileTransfer.close()
-
-
-

@@ -11,28 +11,28 @@ if login():
     except ModuleNotFoundError:
         keyboard = None
 
-    def showProgress(percent,size=25):
+    def showProgress(percent, size=25):
         """
         显示传输进度
         """
 
-        global filename,mode
+        global filename, mode
         size /= 100
         percent = int(percent)
 
         if mode == 1:
-            print('\r 正在上传 "{}" ... {}% [{}{}] '.format(filename,percent,"#"*int((percent*size))," "*int(((100*size)-percent*size))),end="")
+            print('\r 正在上传 "{}" ... {}% [{}{}] '.format(
+                filename, percent, "#"*int((percent*size)), " "*int(((100*size)-percent*size))), end="")
         else:
-            print('\r 正在下载 "{}" ... {}% [{}{}] '.format(filename,percent,"#"*int((percent*size))," "*int(((100*size)-percent*size))),end="")
-
+            print('\r 正在下载 "{}" ... {}% [{}{}] '.format(
+                filename, percent, "#"*int((percent*size)), " "*int(((100*size)-percent*size))), end="")
 
     # filename = None
     # filename_size = 20
     # ip = None
     # mode = None
     # path = None
-    # port = None 
-
+    # port = None
 
     # # 要求用户输入 IP
 
@@ -43,7 +43,6 @@ if login():
     #         port = int(input("\n 请输入端口号: "))
     #     except:
     #         input(" 端口号无效.")
-            
 
     # # 询问用户上传还是下载
 
@@ -64,7 +63,6 @@ if login():
     #         if mode in ("1","2"):
     #             mode = int(mode)
     #         else: mode = None
-
 
     # # 要求用户输入文件夹或文件路径
     # while not path:
@@ -97,26 +95,24 @@ if login():
 
     # 启动服务端或客户端
 
-
     filename = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\Touch-Of-Love.mp3'
     filename_size = 20
     ip = '127.0.0.1'
     mode = 2
     path = 'D:\\OneDrive\\本学期课程\\b测\\File-Transfer\\Touch-Of-Love.mp3'
-    port = 9999 
+    port = 9999
 
     if mode == 1:
-        fileTransfer = FileTransfer(filename=path,mode=FileTransfer.SEND)
+        fileTransfer = FileTransfer(filename=path, mode=FileTransfer.SEND)
         print(" 等待连接 ...")
     else:
         print(" 连接中 ...")
-        fileTransfer = FileTransfer(path=path,mode=FileTransfer.RECEIVE)
+        fileTransfer = FileTransfer(path=path, mode=FileTransfer.RECEIVE)
     try:
-        info = fileTransfer.connect((ip,port))
+        info = fileTransfer.connect((ip, port))
     except:
         input(" 尝试连接失败")
         quit()
-
 
     # 如果用户正在发送文件，则将通知他需要等待客户的确认。
     # 确认后，将发送文件。
@@ -127,7 +123,8 @@ if login():
 
         # 检查文件名大小是否大于限制大小。 如果是这样，它将减少
         if len(filename.split(".")[0]) > filename_size:
-            filename = filename.split(".")[0][0:filename_size]+"."+filename.split(".")[-1]
+            filename = filename.split(
+                ".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
         try:
             freespace = getFreeSpaceMb('C:\\')
@@ -139,7 +136,6 @@ if login():
             input("\n 连接断开。\n\n")
         finally:
             fileTransfer.close()
-
 
     # 如果用户要下载文件，则将显示文件信息以供用户确认一切正常。
     # 确认后，将接收文件
@@ -154,9 +150,11 @@ if login():
 
         # 检查文件名大小是否大于限制大小。 如果超出限制截掉末尾
         if len(filename.split(".")[0]) > filename_size:
-            filename = filename.split(".")[0][0:filename_size]+"."+filename.split(".")[-1]
+            filename = filename.split(
+                ".")[0][0:filename_size]+"."+filename.split(".")[-1]
 
-        print('\n Do you want to download "%s" [%.2f %s] ? (Y/N)'%(filename,size[0],size[1]))
+        print(
+            '\n Do you want to download "%s" [%.2f %s] ? (Y/N)' % (filename, size[0], size[1]))
 
         # 等待用户响应
         confirmation = None
@@ -179,7 +177,6 @@ if login():
                     confirmation = 2
                 else:
                     confirmation = None
-                
 
         # 如果用户不接受该文件，则关闭连接和程序
         if confirmation == 2:
@@ -198,6 +195,3 @@ if login():
                 input("\n A failure occurred during the transfer.\n\n")
             finally:
                 fileTransfer.close()
-
-
-
